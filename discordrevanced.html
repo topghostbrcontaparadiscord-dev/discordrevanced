@@ -1,0 +1,2324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Revanced</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #111214;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+    }
+
+    input, textarea {
+      outline: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* LOGIN */
+    #authScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #313338;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 430px;
+      background: #1e1f22;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 25px;
+    }
+
+    .auth-title {
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .auth-description {
+      text-align: center;
+      color: #b5bac1;
+      margin-bottom: 25px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #b5bac1;
+      margin-bottom: 7px;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      background: #111214;
+      border: 1px solid #111214;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      background: #5865f2;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 15px;
+      margin-top: 5px;
+    }
+
+    .primary-btn:hover {
+      background: #4752c4;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      background: transparent;
+      color: #00a8fc;
+      padding: 12px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #fa7777;
+      text-align: center;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    /* APP */
+    #app {
+      min-height: 100vh;
+      display: flex;
+      background: #313338;
+    }
+
+    .server-bar {
+      width: 72px;
+      background: #1e1f22;
+      padding: 12px 8px;
+      flex-shrink: 0;
+    }
+
+    .server-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: #313338;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .server-icon.active {
+      background: #5865f2;
+      border-radius: 16px;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #2b2d31;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .server-header {
+      height: 55px;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1f2023;
+      font-weight: bold;
+    }
+
+    .channel-list {
+      padding: 15px 10px;
+      flex: 1;
+    }
+
+    .channel-category {
+      color: #949ba4;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 10px 5px;
+      text-transform: uppercase;
+    }
+
+    .channel {
+      padding: 9px;
+      border-radius: 5px;
+      color: #b5bac1;
+      cursor: pointer;
+      margin-bottom: 3px;
+    }
+
+    .channel:hover,
+    .channel.active {
+      background: #3f4147;
+      color: white;
+    }
+
+    .user-bottom {
+      background: #232428;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .small-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #5865f2;
+    }
+
+    .user-bottom-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-bottom-name {
+      font-size: 14px;
+      font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .user-bottom-tag {
+      color: #949ba4;
+      font-size: 11px;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 55px;
+      background: #313338;
+      border-bottom: 1px solid #242529;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      gap: 12px;
+    }
+
+    .menu-btn {
+      display: none;
+      background: transparent;
+      color: white;
+      font-size: 24px;
+    }
+
+    .channel-title {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .welcome {
+      padding: 30px 10px;
+      text-align: center;
+      color: #b5bac1;
+    }
+
+    .welcome h2 {
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .message {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .message-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #5865f2;
+      flex-shrink: 0;
+    }
+
+    .message-content {
+      min-width: 0;
+    }
+
+    .message-author {
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+
+    .message-date {
+      color: #949ba4;
+      font-size: 10px;
+      margin-left: 5px;
+      font-weight: normal;
+    }
+
+    .message-text {
+      color: #dbdee1;
+      word-wrap: break-word;
+    }
+
+    .chat-input-area {
+      padding: 15px;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-form input {
+      flex: 1;
+      background: #383a40;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 15px;
+    }
+
+    .send-btn {
+      background: #5865f2;
+      color: white;
+      border-radius: 8px;
+      padding: 0 18px;
+      font-weight: bold;
+    }
+
+    /* MEMBERS */
+    .members {
+      width: 240px;
+      background: #2b2d31;
+      padding: 15px 10px;
+      overflow-y: auto;
+    }
+
+    .members-title {
+      color: #949ba4;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 5px;
+    }
+
+    .search-box {
+      width: 100%;
+      background: #1e1f22;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    .member {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .member:hover {
+      background: #3f4147;
+    }
+
+    .member-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #5865f2;
+    }
+
+    .member-name {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .nitro {
+      color: #ff73fa;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    /* DRAWER */
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 100vh;
+      background: #2b2d31;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: .2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 18px;
+      font-weight: bold;
+      border-bottom: 1px solid #1f2023;
+    }
+
+    .drawer-content {
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    /* MODAL */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 2000;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #2b2d31;
+      border-radius: 10px;
+      padding: 25px;
+    }
+
+    .modal h2 {
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 11px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .cancel-btn {
+      background: #4e5058;
+      color: white;
+    }
+
+    .confirm-btn {
+      background: #5865f2;
+      color: white;
+    }
+
+    .profile-view {
+      text-align: center;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #5865f2;
+      margin-bottom: 12px;
+    }
+
+    .profile-name {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .profile-username {
+      color: #949ba4;
+      margin-bottom: 15px;
+    }
+
+    .profile-bio {
+      background: #1e1f22;
+      padding: 15px;
+      border-radius: 7px;
+      text-align: left;
+      margin-top: 15px;
+      white-space: pre-wrap;
+    }
+
+    .profile-info {
+      margin-top: 15px;
+      text-align: left;
+      color: #b5bac1;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .gif-preview {
+      width: 130px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 10px auto;
+      display: block;
+    }
+
+    @media (max-width: 800px) {
+      .server-bar,
+      .sidebar {
+        display: none;
+      }
+
+      .members {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .topbar {
+        height: 55px;
+      }
+
+      .messages {
+        padding: 15px 10px;
+      }
+
+      .auth-box {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TELA DE LOGIN -->
+  <section id="authScreen">
+    <div class="auth-box">
+      <div class="logo">💬 Discord Revanced</div>
+
+      <h1 class="auth-title" id="authTitle">
+        Entre na sua conta novamente!
+      </h1>
+
+      <p class="auth-description" id="authDescription">
+        Estamos felizes em ver você novamente.
+      </p>
+
+      <form id="authForm">
+        <div class="field hidden" id="usernameField">
+          <label>USUÁRIO</label>
+          <input
+            type="text"
+            id="registerUsername"
+            placeholder="Digite seu usuário"
+          >
+        </div>
+
+        <div class="field hidden" id="nicknameField">
+          <label>APELIDO</label>
+          <input
+            type="text"
+            id="registerNickname"
+            placeholder="Digite seu apelido"
+          >
+        </div>
+
+        <div class="field">
+          <label>E-MAIL</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="seuemail@email.com"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label>SENHA</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Sua senha"
+            required
+          >
+        </div>
+
+        <button class="primary-btn" id="authButton" type="submit">
+          Entrar
+        </button>
+
+        <button
+          class="secondary-btn"
+          id="switchAuthButton"
+          type="button"
+          onclick="switchAuthMode()"
+        >
+          Criar uma conta
+        </button>
+
+        <div class="error" id="authError"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section id="app" class="hidden">
+
+    <div class="server-bar">
+      <div class="server-icon active">DR</div>
+      <div class="server-icon" onclick="createServer()">+</div>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="server-header">
+        <span>Discord Revanced</span>
+        <span onclick="createServer()" style="cursor:pointer;">+</span>
+      </div>
+
+      <div class="channel-list">
+        <div class="channel-category">Canais de texto</div>
+
+        <div
+          class="channel active"
+          onclick="selectChannel('global')"
+        >
+          # 🌎 Chat Global
+        </div>
+
+        <div
+          class="channel"
+          onclick="createChannel()"
+        >
+          # ➕ Criar canal
+        </div>
+      </div>
+
+      <div class="user-bottom">
+        <img
+          class="small-avatar"
+          id="bottomAvatar"
+          src=""
+          alt=""
+        >
+
+        <div class="user-bottom-info">
+          <div class="user-bottom-name" id="bottomNickname">
+            Usuário
+          </div>
+
+          <div class="user-bottom-tag" id="bottomUsername">
+            @usuario
+          </div>
+        </div>
+
+        <button
+          onclick="openProfileEditor()"
+          style="background:transparent;color:white;font-size:18px;"
+        >
+          ⚙️
+        </button>
+      </div>
+    </aside>
+
+    <main class="main">
+
+      <header class="topbar">
+        <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+
+        <span class="channel-title" id="channelTitle">
+          # 🌎 Chat Global
+        </span>
+      </header>
+
+      <div class="content">
+
+        <section class="chat-area">
+          <div class="messages" id="messages">
+            <div class="welcome">
+              <h2>Bem-vindo ao Discord Revanced!</h2>
+              <p>Carregando mensagens...</p>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <form class="chat-form" id="chatForm">
+              <input
+                type="text"
+                id="messageInput"
+                placeholder="Conversar no Chat Global..."
+                autocomplete="off"
+                required
+              >
+
+              <button class="send-btn" type="submit">
+                Enviar
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <aside class="members">
+          <input
+            class="search-box"
+            id="userSearch"
+            type="text"
+            placeholder="Pesquisar usuários..."
+            oninput="searchUsers()"
+          >
+
+          <div class="members-title">
+            MEMBROS
+          </div>
+
+          <div id="userList"></div>
+        </aside>
+
+      </div>
+    </main>
+
+  </section>
+
+  <!-- DRAWER MOBILE -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      Discord Revanced
+    </div>
+
+    <div class="drawer-content">
+      <div class="channel-category">SERVIDORES</div>
+
+      <div class="channel active">
+        💬 Discord Revanced
+      </div>
+
+      <div class="channel-category">
+        CANAIS DE TEXTO
+      </div>
+
+      <div class="channel active" onclick="selectChannel('global');toggleDrawer()">
+        # 🌎 Chat Global
+      </div>
+
+      <div class="channel" onclick="createServer()">
+        ➕ Criar servidor
+      </div>
+
+      <div class="channel" onclick="createChannel()">
+        ➕ Criar canal
+      </div>
+
+      <div class="channel" onclick="openProfileEditor();toggleDrawer()">
+        ⚙️ Meu perfil
+      </div>
+
+      <div class="channel" onclick="logout()">
+        🚪 Sair
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-bg hidden" id="modalBg">
+    <div class="modal" id="modalContent"></div>
+  </div>
+    <!-- FIREBASE -->
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc,
+      updateDoc,
+      collection,
+      addDoc,
+      query,
+      orderBy,
+      limit,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyATEe3M5RItAj1TyVxI-OY-C22muQ3zRn4",
+  authDomain: "discordrevanced.firebaseapp.com",
+  projectId: "discordrevanced",
+  storageBucket: "discordrevanced.firebasestorage.app",
+  messagingSenderId: "742620251754",
+  appId: "1:742620251754:web:1a91cf5f306d1cae4e6c13",
+  measurementId: "G-BCZB5R53LL"
+};
+
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+
+    let currentUser = null;
+    let currentProfile = null;
+    let unsubscribeChat = null;
+    let unsubscribeUsers = null;
+
+    let authMode = "login";
+
+
+    /* =========================
+       LOGIN / REGISTRO
+    ========================= */
+
+    window.switchAuthMode = function() {
+
+      authMode = authMode === "login"
+        ? "register"
+        : "login";
+
+      const title = document.getElementById("authTitle");
+      const description = document.getElementById("authDescription");
+      const authButton = document.getElementById("authButton");
+      const switchButton = document.getElementById("switchAuthButton");
+
+      const usernameField = document.getElementById("usernameField");
+      const nicknameField = document.getElementById("nicknameField");
+
+
+      if (authMode === "register") {
+
+        title.textContent =
+          "Bem-vindo! Crie sua conta abaixo.";
+
+        description.textContent =
+          "Crie sua conta para entrar no Discord Revanced.";
+
+        authButton.textContent =
+          "Criar conta";
+
+        switchButton.textContent =
+          "Já tenho uma conta";
+
+        usernameField.classList.remove("hidden");
+        nicknameField.classList.remove("hidden");
+
+      } else {
+
+        title.textContent =
+          "Entre na sua conta novamente!";
+
+        description.textContent =
+          "Estamos felizes em ver você novamente.";
+
+        authButton.textContent =
+          "Entrar";
+
+        switchButton.textContent =
+          "Criar uma conta";
+
+        usernameField.classList.add("hidden");
+        nicknameField.classList.add("hidden");
+      }
+    };
+
+
+    document
+      .getElementById("authForm")
+      .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (authMode === "login") {
+          await login();
+        } else {
+          await register();
+        }
+
+      });
+
+
+    async function login() {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const error =
+        document.getElementById("authError");
+
+      error.textContent = "";
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      } catch (e) {
+
+        error.textContent =
+          "E-mail ou senha incorretos.";
+
+        console.error(e);
+      }
+    }
+
+
+    async function register() {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const username =
+        document.getElementById("registerUsername").value.trim();
+
+      const nickname =
+        document.getElementById("registerNickname").value.trim();
+
+      const error =
+        document.getElementById("authError");
+
+      error.textContent = "";
+
+
+      if (!username || !nickname) {
+
+        error.textContent =
+          "Preencha usuário e apelido.";
+
+        return;
+      }
+
+
+      try {
+
+        const credential =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+        const user =
+          credential.user;
+
+
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            uid: user.uid,
+            email: user.email,
+            username: username,
+            nickname: nickname,
+            bio: "",
+            avatar: "",
+            gif: "",
+            nitro: false,
+            createdAt: serverTimestamp(),
+            joinedServers: {}
+          }
+        );
+
+
+      } catch (e) {
+
+        console.error(e);
+
+        if (e.code === "auth/email-already-in-use") {
+
+          error.textContent =
+            "Esse e-mail já está cadastrado.";
+
+        } else if (e.code === "auth/weak-password") {
+
+          error.textContent =
+            "A senha precisa ter pelo menos 6 caracteres.";
+
+        } else {
+
+          error.textContent =
+            "ERRO:" + e.code;
+        }
+      }
+    }
+
+
+    /* =========================
+       AUTENTICAÇÃO
+    ========================= */
+
+    onAuthStateChanged(auth, async (user) => {
+
+      if (user) {
+
+        currentUser = user;
+
+        await loadProfile();
+
+        document
+          .getElementById("authScreen")
+          .classList.add("hidden");
+
+        document
+          .getElementById("app")
+          .classList.remove("hidden");
+
+
+        updateBottomUser();
+
+        listenGlobalChat();
+        listenUsers();
+
+      } else {
+
+        currentUser = null;
+        currentProfile = null;
+
+        document
+          .getElementById("authScreen")
+          .classList.remove("hidden");
+
+        document
+          .getElementById("app")
+          .classList.add("hidden");
+
+        if (unsubscribeChat) {
+          unsubscribeChat();
+          unsubscribeChat = null;
+        }
+
+        if (unsubscribeUsers) {
+          unsubscribeUsers();
+          unsubscribeUsers = null;
+        }
+      }
+
+    });
+
+
+    async function loadProfile() {
+
+      const ref =
+        doc(db, "users", currentUser.uid);
+
+      const snapshot =
+        await getDoc(ref);
+
+
+      if (snapshot.exists()) {
+
+        currentProfile = snapshot.data();
+
+      } else {
+
+        currentProfile = {
+
+          uid: currentUser.uid,
+          email: currentUser.email,
+          username: "usuario",
+          nickname: "Usuário",
+          bio: "",
+          avatar: "",
+          gif: "",
+          nitro: false,
+          joinedServers: {}
+        };
+
+        await setDoc(ref, currentProfile);
+      }
+    }
+
+
+    function updateBottomUser() {
+
+      if (!currentProfile) return;
+
+
+      document.getElementById("bottomNickname")
+        .textContent =
+          currentProfile.nickname || "Usuário";
+
+
+      document.getElementById("bottomUsername")
+        .textContent =
+          "@" + (currentProfile.username || "usuario");
+
+
+      const avatar =
+        document.getElementById("bottomAvatar");
+
+
+      avatar.src =
+        currentProfile.avatar ||
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    }
+
+
+    /* =========================
+       CHAT GLOBAL
+    ========================= */
+
+    function listenGlobalChat() {
+
+      const messagesRef =
+        collection(db, "globalMessages");
+
+
+      const messagesQuery =
+        query(
+          messagesRef,
+          orderBy("createdAt", "asc"),
+          limit(150)
+        );
+
+
+      unsubscribeChat =
+        onSnapshot(
+          messagesQuery,
+          (snapshot) => {
+
+            const container =
+              document.getElementById("messages");
+
+            container.innerHTML = "";
+
+
+            if (snapshot.empty) {
+
+              container.innerHTML = `
+                <div class="welcome">
+                  <h2>🤖 Bot Revanced</h2>
+                  <p>Bem-vindo ao Discord Revanced!</p>
+                </div>
+              `;
+
+              return;
+            }
+
+
+            snapshot.forEach((docSnap) => {
+
+              const message =
+                docSnap.data();
+
+              renderMessage(message, container);
+            });
+
+
+            container.scrollTop =
+              container.scrollHeight;
+          },
+
+          (error) => {
+
+            console.error(error);
+
+            document.getElementById("messages").innerHTML = `
+              <div class="welcome">
+                <h2>🤖 Bot Revanced</h2>
+                <p>Bem-vindo ao Discord Revanced!</p>
+                <p style="margin-top:10px;color:#fa7777;">
+                  Não foi possível carregar as mensagens.
+                </p>
+              </div>
+            `;
+          }
+        );
+    }
+
+
+    function renderMessage(message, container) {
+
+      const avatar =
+        message.avatar ||
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+      const div =
+        document.createElement("div");
+
+      div.className = "message";
+
+
+      let dateText = "";
+
+      if (message.createdAt) {
+
+        try {
+
+          const date =
+            message.createdAt.toDate();
+
+          dateText =
+            date.toLocaleString("pt-BR");
+
+        } catch {}
+      }
+
+
+      div.innerHTML = `
+        <img
+          class="message-avatar"
+          src="${escapeHtml(avatar)}"
+          alt=""
+        >
+
+        <div class="message-content">
+
+          <div class="message-author">
+
+            ${escapeHtml(
+              message.nickname ||
+              message.username ||
+              "Usuário"
+            )}
+
+            ${
+              message.nitro
+              ? '<span class="nitro"> 💎 NITRO</span>'
+              : ""
+            }
+
+            <span class="message-date">
+              ${escapeHtml(dateText)}
+            </span>
+
+          </div>
+
+          <div class="message-text">
+            ${escapeHtml(message.text || "")}
+          </div>
+
+        </div>
+      `;
+
+
+      container.appendChild(div);
+    }
+
+
+    document
+      .getElementById("chatForm")
+      .addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        await sendMessage();
+      });
+
+
+    async function sendMessage() {
+
+      const input =
+        document.getElementById("messageInput");
+
+      const text =
+        input.value.trim();
+
+
+      if (!text || !currentUser || !currentProfile)
+        return;
+
+
+      input.value = "";
+
+
+      try {
+
+        await addDoc(
+          collection(db, "globalMessages"),
+          {
+            uid: currentUser.uid,
+
+            username:
+              currentProfile.username || "usuario",
+
+            nickname:
+              currentProfile.nickname || "Usuário",
+
+            avatar:
+              currentProfile.avatar || "",
+
+            nitro:
+              currentProfile.nitro === true,
+
+            text: text,
+
+            createdAt:
+              serverTimestamp()
+          }
+        );
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível enviar a mensagem."
+        );
+      }
+    }
+
+
+    /* =========================
+       USUÁRIOS
+    ========================= */
+
+    function listenUsers() {
+
+      const usersQuery =
+        query(
+          collection(db, "users"),
+          limit(100)
+        );
+
+
+      unsubscribeUsers =
+        onSnapshot(
+          usersQuery,
+          (snapshot) => {
+
+            const users = [];
+
+            snapshot.forEach((docSnap) => {
+
+              users.push({
+                id: docSnap.id,
+                ...docSnap.data()
+              });
+
+            });
+
+
+            window.allUsers = users;
+
+            renderUsers(users);
+          },
+
+          (error) => {
+
+            console.error(error);
+          }
+        );
+    }
+
+
+    function renderUsers(users) {
+
+      const list =
+        document.getElementById("userList");
+
+      list.innerHTML = "";
+
+
+      users.forEach((user) => {
+
+        const member =
+          document.createElement("div");
+
+        member.className = "member";
+
+        member.onclick = () =>
+          viewUser(user.id);
+
+
+        const avatar =
+          user.avatar ||
+          "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+        member.innerHTML = `
+
+          <img
+            class="member-avatar"
+            src="${escapeHtml(avatar)}"
+            alt=""
+          >
+
+          <div>
+
+            <div class="member-name">
+
+              ${escapeHtml(
+                user.nickname ||
+                user.username ||
+                "Usuário"
+              )}
+
+              ${
+                user.nitro
+                ? '<span class="nitro">💎</span>'
+                : ""
+              }
+
+            </div>
+
+            <div style="font-size:11px;color:#949ba4;">
+              @${escapeHtml(
+                user.username || "usuario"
+              )}
+            </div>
+
+          </div>
+        `;
+
+
+        list.appendChild(member);
+      });
+    }
+
+
+    window.searchUsers = function() {
+
+      const search =
+        document
+          .getElementById("userSearch")
+          .value
+          .toLowerCase()
+          .trim();
+
+
+      if (!window.allUsers) return;
+
+
+      if (!search) {
+
+        renderUsers(window.allUsers);
+        return;
+      }
+
+
+      const filtered =
+        window.allUsers.filter((user) => {
+
+          const nickname =
+            (user.nickname || "")
+              .toLowerCase();
+
+          const username =
+            (user.username || "")
+              .toLowerCase();
+
+
+          return (
+            nickname.includes(search) ||
+            username.includes(search)
+          );
+        });
+
+
+      renderUsers(filtered);
+    };
+        /* =========================
+       PERFIL PÚBLICO
+    ========================= */
+
+    window.viewUser = async function(uid) {
+
+      try {
+
+        const snapshot =
+          await getDoc(
+            doc(db, "users", uid)
+          );
+
+
+        if (!snapshot.exists()) {
+
+          alert("Usuário não encontrado.");
+          return;
+        }
+
+
+        const user =
+          snapshot.data();
+
+
+        let createdText =
+          "Data desconhecida";
+
+
+        if (user.createdAt) {
+
+          try {
+
+            createdText =
+              user.createdAt
+                .toDate()
+                .toLocaleDateString("pt-BR");
+
+          } catch {}
+        }
+
+
+        let joinedHTML =
+          "<p>Nenhum servidor registrado.</p>";
+
+
+        if (
+          user.joinedServers &&
+          Object.keys(user.joinedServers).length
+        ) {
+
+          joinedHTML = "";
+
+          for (
+            const [server, date] of
+            Object.entries(user.joinedServers)
+          ) {
+
+            let dateText = "";
+
+            try {
+
+              if (date?.toDate) {
+
+                dateText =
+                  date.toDate()
+                    .toLocaleDateString("pt-BR");
+
+              } else {
+
+                dateText =
+                  new Date(date)
+                    .toLocaleDateString("pt-BR");
+              }
+
+            } catch {
+
+              dateText = "Data desconhecida";
+            }
+
+
+            joinedHTML += `
+              <div>
+                🏠 ${escapeHtml(server)}
+                — ${escapeHtml(dateText)}
+              </div>
+            `;
+          }
+        }
+
+
+        const avatar =
+          user.avatar ||
+          "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+        let gifHTML = "";
+
+
+        if (user.nitro && user.gif) {
+
+          gifHTML = `
+            <img
+              class="gif-preview"
+              src="${escapeHtml(user.gif)}"
+              alt="GIF"
+            >
+          `;
+        }
+
+
+        openModal(`
+          <div class="profile-view">
+
+            ${gifHTML}
+
+            <img
+              class="profile-avatar"
+              src="${escapeHtml(avatar)}"
+              alt=""
+            >
+
+            <div class="profile-name">
+
+              ${escapeHtml(
+                user.nickname ||
+                "Usuário"
+              )}
+
+              ${
+                user.nitro
+                ? '<span class="nitro">💎 NITRO</span>'
+                : ""
+              }
+
+            </div>
+
+            <div class="profile-username">
+              @${escapeHtml(
+                user.username || "usuario"
+              )}
+            </div>
+
+            <div class="profile-bio">
+              ${escapeHtml(
+                user.bio || "Esse usuário não possui bio."
+              )}
+            </div>
+
+            <div class="profile-info">
+
+              <div>
+                📅 Conta criada:
+                ${escapeHtml(createdText)}
+              </div>
+
+              <div>
+                🆔 UID:
+                ${escapeHtml(user.uid || uid)}
+              </div>
+
+              <div style="margin-top:10px;">
+                <b>Servidores:</b>
+              </div>
+
+              ${joinedHTML}
+
+            </div>
+
+          </div>
+
+          <div class="modal-actions">
+            <button
+              class="cancel-btn"
+              onclick="closeModal()"
+            >
+              Fechar
+            </button>
+          </div>
+        `);
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível abrir o perfil."
+        );
+      }
+    };
+
+
+    /* =========================
+       EDITAR PERFIL
+    ========================= */
+
+    window.openProfileEditor = function() {
+
+      if (!currentProfile) return;
+
+
+      openModal(`
+
+        <h2>⚙️ Meu perfil</h2>
+
+        <div class="field">
+          <label>APELIDO</label>
+
+          <input
+            id="editNickname"
+            value="${escapeHtml(
+              currentProfile.nickname || ""
+            )}"
+            placeholder="Seu apelido"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>USUÁRIO</label>
+
+          <input
+            id="editUsername"
+            value="${escapeHtml(
+              currentProfile.username || ""
+            )}"
+            placeholder="Seu usuário"
+          >
+        </div>
+
+
+        <div class="field">
+          <label>BIO</label>
+
+          <textarea
+            id="editBio"
+            placeholder="Fale um pouco sobre você..."
+          >${escapeHtml(
+            currentProfile.bio || ""
+          )}</textarea>
+        </div>
+
+
+        <div class="field">
+          <label>URL DO AVATAR</label>
+
+          <input
+            id="editAvatar"
+            value="${escapeHtml(
+              currentProfile.avatar || ""
+            )}"
+            placeholder="https://..."
+          >
+        </div>
+
+
+        <div style="
+          background:#1e1f22;
+          padding:12px;
+          border-radius:7px;
+          margin-top:10px;
+        ">
+
+          ${
+            currentProfile.nitro
+            ? `
+              <div style="color:#ff73fa;font-weight:bold;">
+                💎 NITRO ATIVADO
+              </div>
+
+              <button
+                class="primary-btn"
+                style="margin-top:10px;"
+                onclick="openGifEditor()"
+              >
+                🎞️ Configurar GIF do perfil
+              </button>
+            `
+            : `
+              <div style="color:#b5bac1;">
+                💎 Nitro não ativado
+              </div>
+
+              <button
+                class="primary-btn"
+                style="margin-top:10px;"
+                onclick="activateNitro()"
+              >
+                💎 Ativar Nitro
+              </button>
+            `
+          }
+
+        </div>
+
+
+        <div class="modal-actions">
+
+          <button
+            class="cancel-btn"
+            onclick="closeModal()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            class="confirm-btn"
+            onclick="saveProfile()"
+          >
+            💾 Salvar perfil
+          </button>
+
+        </div>
+
+        <button
+          class="primary-btn"
+          style="margin-top:12px;background:#3ba55d;"
+          onclick="saveEverything()"
+        >
+          💾 Salvar tudo
+        </button>
+
+        <button
+          class="secondary-btn"
+          onclick="logout()"
+        >
+          🚪 Sair da conta
+        </button>
+
+      `);
+    };
+
+
+    window.saveProfile = async function() {
+
+      if (!currentUser) return;
+
+
+      const nickname =
+        document
+          .getElementById("editNickname")
+          .value
+          .trim();
+
+
+      const username =
+        document
+          .getElementById("editUsername")
+          .value
+          .trim();
+
+
+      const bio =
+        document
+          .getElementById("editBio")
+          .value
+          .trim();
+
+
+      const avatar =
+        document
+          .getElementById("editAvatar")
+          .value
+          .trim();
+
+
+      if (!nickname || !username) {
+
+        alert(
+          "Apelido e usuário são obrigatórios."
+        );
+
+        return;
+      }
+
+
+      try {
+
+        await updateDoc(
+          doc(db, "users", currentUser.uid),
+          {
+            nickname,
+            username,
+            bio,
+            avatar
+          }
+        );
+
+
+        currentProfile.nickname = nickname;
+        currentProfile.username = username;
+        currentProfile.bio = bio;
+        currentProfile.avatar = avatar;
+
+
+        updateBottomUser();
+
+        alert("Perfil salvo!");
+
+        closeModal();
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível salvar o perfil."
+        );
+      }
+    };
+
+
+    /* =========================
+       SALVAR TUDO
+    ========================= */
+
+    window.saveEverything = async function() {
+
+      if (!currentUser || !currentProfile)
+        return;
+
+
+      try {
+
+        const updates = {
+
+          nickname:
+            document.getElementById("editNickname")
+              ?.value.trim()
+              || currentProfile.nickname,
+
+          username:
+            document.getElementById("editUsername")
+              ?.value.trim()
+              || currentProfile.username,
+
+          bio:
+            document.getElementById("editBio")
+              ?.value.trim()
+              || "",
+
+          avatar:
+            document.getElementById("editAvatar")
+              ?.value.trim()
+              || "",
+
+          nitro:
+            currentProfile.nitro === true,
+
+          gif:
+            currentProfile.gif || ""
+        };
+
+
+        await updateDoc(
+          doc(db, "users", currentUser.uid),
+          updates
+        );
+
+
+        currentProfile = {
+          ...currentProfile,
+          ...updates
+        };
+
+
+        updateBottomUser();
+
+        alert("💾 Tudo foi salvo!");
+
+        closeModal();
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível salvar tudo."
+        );
+      }
+    };
+
+
+    /* =========================
+       NITRO
+    ========================= */
+
+    window.activateNitro = async function() {
+
+      const password =
+        prompt(
+          "Digite a senha para ativar o Nitro:"
+        );
+
+
+      if (password !== "1234") {
+
+        alert("Senha incorreta.");
+        return;
+      }
+
+
+      try {
+
+        await updateDoc(
+          doc(db, "users", currentUser.uid),
+          {
+            nitro: true
+          }
+        );
+
+
+        currentProfile.nitro = true;
+
+        alert("💎 Nitro ativado!");
+
+        openProfileEditor();
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível ativar o Nitro."
+        );
+      }
+    };
+
+
+    /* =========================
+       GIF
+    ========================= */
+
+    window.openGifEditor = function() {
+
+      if (!currentProfile?.nitro) {
+
+        alert(
+          "Você precisa ativar o Nitro primeiro."
+        );
+
+        return;
+      }
+
+
+      openModal(`
+
+        <h2>🎞️ GIF do perfil</h2>
+
+        <div class="field">
+
+          <label>URL DO GIF</label>
+
+          <input
+            id="gifUrl"
+            value="${escapeHtml(
+              currentProfile.gif || ""
+            )}"
+            placeholder="https://...gif"
+          >
+
+        </div>
+
+        <p style="
+          color:#949ba4;
+          font-size:13px;
+          margin-bottom:10px;
+        ">
+          Cole o link direto de um GIF.
+        </p>
+
+        <div class="modal-actions">
+
+          <button
+            class="cancel-btn"
+            onclick="closeModal()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            class="confirm-btn"
+            onclick="saveGif()"
+          >
+            Salvar GIF
+          </button>
+
+        </div>
+
+      `);
+    };
+
+
+    window.saveGif = async function() {
+
+      const gif =
+        document
+          .getElementById("gifUrl")
+          .value
+          .trim();
+
+
+      try {
+
+        await updateDoc(
+          doc(db, "users", currentUser.uid),
+          {
+            gif: gif
+          }
+        );
+
+
+        currentProfile.gif = gif;
+
+        alert("🎞️ GIF salvo!");
+
+        openProfileEditor();
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível salvar o GIF."
+        );
+      }
+    };
+
+
+    /* =========================
+       SERVIDORES / CANAIS
+    ========================= */
+
+    window.createServer = async function() {
+
+      const name =
+        prompt("Nome do novo servidor:");
+
+
+      if (!name || !name.trim())
+        return;
+
+
+      const cleanName =
+        name.trim();
+
+
+      try {
+
+        const joinedServers =
+          currentProfile.joinedServers || {};
+
+
+        joinedServers[cleanName] =
+          new Date().toISOString();
+
+
+        await updateDoc(
+          doc(db, "users", currentUser.uid),
+          {
+            joinedServers
+          }
+        );
+
+
+        currentProfile.joinedServers =
+          joinedServers;
+
+
+        alert(
+          "🏠 Servidor criado: " + cleanName
+        );
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível criar o servidor."
+        );
+      }
+    };
+
+
+    window.createChannel = function() {
+
+      const name =
+        prompt("Nome do novo canal:");
+
+
+      if (!name || !name.trim())
+        return;
+
+
+      alert(
+        "Canal #" +
+        name.trim() +
+        " criado visualmente!"
+      );
+    };
+
+
+    window.selectChannel = function(channel) {
+
+      if (channel === "global") {
+
+        document.getElementById(
+          "channelTitle"
+        ).textContent =
+          "# 🌎 Chat Global";
+
+        document
+          .querySelectorAll(".channel")
+          .forEach((element) => {
+
+            element.classList.remove("active");
+          });
+      }
+    };
+
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    window.toggleDrawer = function() {
+
+      document
+        .getElementById("drawer")
+        .classList.toggle("open");
+    };
+
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    window.openModal = function(html) {
+
+      document.getElementById(
+        "modalContent"
+      ).innerHTML = html;
+
+
+      document
+        .getElementById("modalBg")
+        .classList.remove("hidden");
+    };
+
+
+    window.closeModal = function() {
+
+      document
+        .getElementById("modalBg")
+        .classList.add("hidden");
+    };
+
+
+    document
+      .getElementById("modalBg")
+      .addEventListener("click", function(event) {
+
+        if (event.target === this) {
+          closeModal();
+        }
+      });
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    window.logout = async function() {
+
+      try {
+
+        await signOut(auth);
+
+        closeModal();
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Não foi possível sair."
+        );
+      }
+    };
+
+
+    /* =========================
+       SEGURANÇA HTML
+    ========================= */
+
+    function escapeHtml(value) {
+
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+  </script>
+
+</body>
+</html>
